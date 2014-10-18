@@ -1,0 +1,3 @@
+version: "0.1.0"
+dependencies:
+  q: "distri/q:v1.0.1"
