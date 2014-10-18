@@ -50,10 +50,16 @@ Implementation
       {policy, signature, accessKey} = credentials
       {acl, bucket, namespace} = extractPolicyData(policy)
 
-      upload: ({key, blob, cacheControl}) ->
-        bucketUrl = "https://s3.amazonaws.com/#{bucket}"
+      bucketUrl = "https://s3.amazonaws.com/#{bucket}"
+
+      urlFor = (key) ->
         namespacedKey = "#{namespace}#{key}"
-        url = "#{bucketUrl}/#{namespacedKey}"
+
+        "#{bucketUrl}/#{namespacedKey}"
+
+      upload: ({key, blob, cacheControl}) ->
+        namespacedKey = "#{namespace}#{key}"
+        url = urlFor(key)
 
         sendForm bucketUrl, objectToForm
           key: namespacedKey
@@ -66,6 +72,33 @@ Implementation
           file: blob
         .then ->
           url
+
+      get: (key) ->
+        url = urlFor(key) + "?origin=#{document.domain}"
+
+        deferred = Q.defer()
+
+        request = new XMLHttpRequest
+        request.open "GET", url, true
+        request.responseType = "arraybuffer"
+
+        request.onprogress = (e) ->
+          if e.lengthComputable
+            deferred.notify(e.loaded / e.total)
+
+        request.onreadystatechange = ->
+          if request.readyState is 4
+            if isSuccess(request)
+              blob = new Blob [request.response],
+                type: request.getResponseHeader('content-type')
+
+              deferred.resolve blob
+            else
+              deferred.reject "#{request.status} - #{request.statusText}"
+
+        request.send()
+
+        return deferred.promise
 
 Helpers
 -------
