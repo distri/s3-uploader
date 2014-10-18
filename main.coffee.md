@@ -10,7 +10,19 @@ Usage
 >     uploader.upload
 >       key: "myfile.text"
 >       blob: new Blob ["radical"]
->       cacheControl: 60 # default 31536000
+>       cacheControl: 60 # default 0
+
+
+The uploader automatically prefixes the key with the namespace specified in the
+policy.
+
+A promise is returned that is fulfilled with the url of the uploaded resource.
+
+>     .then (url) -> # "https://s3.amazonaws.com/trinket/18894/myfile.txt"
+
+The promise is rejected with an error if the upload fails.
+
+A progress event is fired with the percentage of the upload that has completed.
 
 The policy is a JSON object with the following keys:
 
@@ -46,7 +58,7 @@ Implementation
         sendForm bucketUrl, objectToForm
           key: namespacedKey
           "Content-Type": blob.type
-          "Cache-Control": "max-age=#{cacheControl or 31536000}"
+          "Cache-Control": "max-age=#{cacheControl or 0}"
           AWSAccessKeyId: accessKey
           acl: acl
           policy: policy
@@ -85,14 +97,16 @@ Helpers
     isSuccess = (request) ->
       request.status.toString()[0] is "2"
 
-    # TODO: Figure out how to get this to work
     sendForm = (url, formData) ->
       deferred = Q.defer()
 
       request = new XMLHttpRequest()
 
       request.open("POST", url, true)
-      request.send(formData)
+
+      request.upload.onprogress = (e) ->
+        if e.lengthComputable
+          deferred.notify(e.loaded / e.total)
 
       request.onreadystatechange = (e) ->
         if request.readyState is 4
@@ -100,6 +114,8 @@ Helpers
             deferred.resolve(true)
           else
             deferred.reject request.responseText
+
+      request.send(formData)
 
       return deferred.promise
 
@@ -109,4 +125,3 @@ Helpers
 
         return formData
       , new FormData
-

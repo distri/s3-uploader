@@ -13,4 +13,6 @@ describe "uploader", ->
       done()
     , (error) ->
       console.log error
+    , (progress) ->
+      console.log progress
     .done()
