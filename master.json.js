@@ -20,7 +20,7 @@ window["distri/s3-uploader:master"]({
     },
     "pixie.cson": {
       "path": "pixie.cson",
-      "content": "version: \"0.1.0\"\ndependencies:\n  q: \"distri/q:v1.0.1\"\n",
+      "content": "version: \"0.1.1\"\ndependencies:\n  q: \"distri/q:v1.0.1\"\n",
       "mode": "100644",
       "type": "blob"
     },
@@ -39,7 +39,7 @@ window["distri/s3-uploader:master"]({
     },
     "pixie": {
       "path": "pixie",
-      "content": "module.exports = {\"version\":\"0.1.0\",\"dependencies\":{\"q\":\"distri/q:v1.0.1\"}};",
+      "content": "module.exports = {\"version\":\"0.1.1\",\"dependencies\":{\"q\":\"distri/q:v1.0.1\"}};",
       "type": "blob"
     },
     "test/test": {
@@ -51,7 +51,7 @@ window["distri/s3-uploader:master"]({
   "progenitor": {
     "url": "http://www.danielx.net/editor/"
   },
-  "version": "0.1.0",
+  "version": "0.1.1",
   "entryPoint": "main",
   "repository": {
     "branch": "master",
