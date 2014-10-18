@@ -109,10 +109,16 @@ module.<span class="function"><span class="title">exports</span></span> = (crede
   {policy, signature, accessKey} = credentials
   {acl, bucket, namespace} = extractPolicyData(policy)
 
-  upload: ({key, blob, cacheControl}) -&gt;
-    bucketUrl = <span class="string">"https://s3.amazonaws.com/<span class="subst">#{bucket}</span>"</span>
+  bucketUrl = <span class="string">"https://s3.amazonaws.com/<span class="subst">#{bucket}</span>"</span>
+
+  <span class="function"><span class="title">urlFor</span></span> = (key) -&gt;
     namespacedKey = <span class="string">"<span class="subst">#{namespace}</span><span class="subst">#{key}</span>"</span>
-    url = <span class="string">"<span class="subst">#{bucketUrl}</span>/<span class="subst">#{namespacedKey}</span>"</span>
+
+    <span class="string">"<span class="subst">#{bucketUrl}</span>/<span class="subst">#{namespacedKey}</span>"</span>
+
+  upload: ({key, blob, cacheControl}) -&gt;
+    namespacedKey = <span class="string">"<span class="subst">#{namespace}</span><span class="subst">#{key}</span>"</span>
+    url = urlFor(key)
 
     sendForm bucketUrl, objectToForm
       key: namespacedKey
@@ -124,7 +130,34 @@ module.<span class="function"><span class="title">exports</span></span> = (crede
       signature: signature
       file: blob
     .<span class="keyword">then</span> -&gt;
-      url</code></pre>
+      url
+
+  get: (key) -&gt;
+    url = urlFor(key) + <span class="string">"?origin=<span class="subst">#{document.domain}</span>"</span>
+
+    deferred = Q.defer()
+
+    request = <span class="keyword">new</span> XMLHttpRequest
+    request.open <span class="string">"GET"</span>, url, <span class="literal">true</span>
+    request.responseType = <span class="string">"arraybuffer"</span>
+
+    request.<span class="function"><span class="title">onprogress</span></span> = (e) -&gt;
+      <span class="keyword">if</span> e.lengthComputable
+        deferred.notify(e.loaded / e.total)
+
+    request.<span class="function"><span class="title">onreadystatechange</span></span> = -&gt;
+      <span class="keyword">if</span> request.readyState <span class="keyword">is</span> <span class="number">4</span>
+        <span class="keyword">if</span> isSuccess(request)
+          blob = <span class="keyword">new</span> Blob [request.response],
+            type: request.getResponseHeader(<span class="string">'content-type'</span>)
+
+          deferred.resolve blob
+        <span class="keyword">else</span>
+          deferred.reject <span class="string">"<span class="subst">#{request.status}</span> - <span class="subst">#{request.statusText}</span>"</span>
+
+    request.send()
+
+    <span class="keyword">return</span> deferred.promise</code></pre>
 </div>
         </li>
         
