@@ -1,5 +1,5 @@
-S3
-====
+S3 Uploader
+===========
 
 Upload data directly to S3 from the client.
 
