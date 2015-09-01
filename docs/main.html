@@ -141,9 +141,7 @@ module.<span class="function"><span class="title">exports</span></span> = (crede
     request.open <span class="string">"GET"</span>, url, <span class="literal">true</span>
     request.responseType = <span class="string">"arraybuffer"</span>
 
-    request.<span class="function"><span class="title">onprogress</span></span> = (e) -&gt;
-      <span class="keyword">if</span> e.lengthComputable
-        deferred.notify(e.loaded / e.total)
+    request.onprogress = deferred.notify
 
     request.<span class="function"><span class="title">onreadystatechange</span></span> = -&gt;
       <span class="keyword">if</span> request.readyState <span class="keyword">is</span> <span class="number">4</span>
@@ -217,9 +215,7 @@ module.<span class="function"><span class="title">exports</span></span> = (crede
 
   request.open(<span class="string">"POST"</span>, url, <span class="literal">true</span>)
 
-  request.upload.<span class="function"><span class="title">onprogress</span></span> = (e) -&gt;
-    <span class="keyword">if</span> e.lengthComputable
-      deferred.notify(e.loaded / e.total)
+  request.upload.onprogress = deferred.notify
 
   request.<span class="function"><span class="title">onreadystatechange</span></span> = (e) -&gt;
     <span class="keyword">if</span> request.readyState <span class="keyword">is</span> <span class="number">4</span>
