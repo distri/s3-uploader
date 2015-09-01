@@ -82,9 +82,7 @@ Implementation
         request.open "GET", url, true
         request.responseType = "arraybuffer"
 
-        request.onprogress = (e) ->
-          if e.lengthComputable
-            deferred.notify(e.loaded / e.total)
+        request.onprogress = deferred.notify
 
         request.onreadystatechange = ->
           if request.readyState is 4
@@ -137,9 +135,7 @@ Helpers
 
       request.open("POST", url, true)
 
-      request.upload.onprogress = (e) ->
-        if e.lengthComputable
-          deferred.notify(e.loaded / e.total)
+      request.upload.onprogress = deferred.notify
 
       request.onreadystatechange = (e) ->
         if request.readyState is 4
