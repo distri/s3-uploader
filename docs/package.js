@@ -186,7 +186,7 @@
     },
     "pixie.cson": {
       "path": "pixie.cson",
-      "content": "version: \"0.1.3-pre.0\"\ndependencies:\n  q: \"distri/q:v1.0.1\"\n",
+      "content": "version: \"0.1.3\"\ndependencies:\n  q: \"distri/q:v1.0.1\"\n",
       "mode": "100644",
       "type": "blob"
     },
@@ -205,7 +205,7 @@
     },
     "pixie": {
       "path": "pixie",
-      "content": "module.exports = {\"version\":\"0.1.3-pre.0\",\"dependencies\":{\"q\":\"distri/q:v1.0.1\"}};",
+      "content": "module.exports = {\"version\":\"0.1.3\",\"dependencies\":{\"q\":\"distri/q:v1.0.1\"}};",
       "type": "blob"
     },
     "test/test": {
@@ -217,7 +217,7 @@
   "progenitor": {
     "url": "http://www.danielx.net/editor/"
   },
-  "version": "0.1.3-pre.0",
+  "version": "0.1.3",
   "entryPoint": "main",
   "repository": {
     "branch": "master",
